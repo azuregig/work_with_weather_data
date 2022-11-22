@@ -1,0 +1,26 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+type: command
+
+name: check_nc_iplt
+display_name: cube diagnostics with iris and iplt
+description: some diagnostics on an nc file with mlflow, using the iris plotting capability
+version: 1
+
+inputs:
+  nc_folder:
+    type: uri_folder
+  nc_filename:
+    type: string
+
+
+code: ./src
+
+# let's define a basic anonymous environment, starting from a simple image that supports conda
+environment: 
+  image: continuumio/miniconda3:latest
+  conda_file: ./conda.yml
+
+command: >-
+  python check_nc.py
+  --nc_folder ${{inputs.nc_folder}} 
+  --nc_filename ${{inputs.nc_filename}}

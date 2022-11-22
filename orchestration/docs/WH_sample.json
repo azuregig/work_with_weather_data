@@ -1,0 +1,44 @@
+{
+    "orderDetails": {
+        "order":{
+            "orderId": "o203",
+            "name": "O203",
+            "modelId": "mo-mogrepsg",
+            "format": "GRIB2"
+        },
+        "files": [
+            {
+                "fileId": "isbl_geopotential-height_50000_+00",
+                "surfaceId": "isbl",
+                "levels": [
+                    "50000"
+                ],
+                "runDateTime": "2022-10-18T00:00:00Z",
+                "run": "0",
+                "region": {
+                    "name": "custom",
+                    "extent": {
+                        "x": {
+                            "label": "longitude",
+                            "lowerBound": "-4.526367",
+                            "upperBound": "-2.8125",
+                            "uomLabel":"degree"
+                        },
+                        "y": {
+                            "label": "latitude",
+                            "lowerBound": "50.126367",
+                            "upperBound": "51.179343",
+                            "uomLabel":"degree"
+                        }
+                    }
+                },
+                "parameters" :[
+                    "geopotential-height"
+                ],
+                "timesteps": [
+                    "0","12","24"
+                ]
+            }
+        ]
+    }
+}

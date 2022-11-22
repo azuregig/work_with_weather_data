@@ -1,0 +1,22 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+
+# name in the experiment log
+experiment_name: cliv2-job-with-var-DEMO
+
+# target compute. the 'azureml:' means a compute target with this name was previously defined in the workspace
+# note - this is a simple job, and so it will use only one node of this cluster
+compute: azureml:cpu-cluster
+
+# the environment to provision on the compute node
+# this one is defined by reference to public docker image, but could also be by docker file, or image + conda file
+environment:
+  image: python 
+
+# demonstrate additional environment config
+environment_variables:
+  WHO: "Weather Folks"
+
+# the command to issue once in the target compute
+# later we will see commands that run uploaded source code instead of a linux command line
+command: echo "Hello $WHO"
+

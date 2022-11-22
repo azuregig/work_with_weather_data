@@ -1,0 +1,35 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+
+experiment_name: iris-regrid-demo
+display_name: regrid with iris
+description: Pipeline with one component - iris regridding
+
+settings:
+  default_compute: azureml:cpu-cluster
+
+inputs:
+  regridded_name: "regridded.nc"
+
+outputs:
+  final_pipeline_output:
+    type: uri_folder
+    path: azureml://datastores/azuregigdatalake_bronze/paths/nc/regridded-test
+    mode: rw_mount
+
+jobs:
+
+  regrid:
+    type: command
+    component: file:../components/iris_regrid/definition.yml
+    inputs:
+      src_cube:
+        type: uri_file
+        path: azureml://datastores/azuregigdatalake_bronze/paths/pp/iris_sample_data/GloSea4/ensemble_000.pp 
+      grid_cube:
+        type: uri_file
+        path: azureml://datastores/azuregigdatalake_bronze/paths/pp/iris_sample_data/air_temp.pp 
+      output_name: ${{parent.inputs.regridded_name}}    
+    outputs:
+      output_folder: ${{parent.outputs.final_pipeline_output}}
+   

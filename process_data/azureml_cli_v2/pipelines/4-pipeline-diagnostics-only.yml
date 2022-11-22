@@ -1,0 +1,20 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+
+experiment_name: iris-regrid-demo
+display_name: cube diagnostics and lazy loading check
+description: Pipeline with pre-configured component
+
+settings:
+  default_compute: azureml:cpu-cluster
+
+
+jobs:
+
+  check_nc:
+    type: command
+    component: file:../components/check_nc_iplt/definition.yml
+    inputs: 
+      nc_folder: 
+        path: azureml://datastores/azuregigdatalake_bronze/paths/nc/regridded-test
+      nc_filename:   "regridded.nc"

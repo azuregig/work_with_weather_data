@@ -1,0 +1,32 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+type: command
+
+name: iris_regrid
+display_name: regrid with iris
+version: 1
+
+inputs:
+  src_cube:
+    type: uri_file
+  grid_cube:
+    type: uri_file
+  output_name:
+    type: string
+
+outputs:
+  output_folder:
+    type: uri_folder
+
+code: ./src
+
+# let's define a basic anonymous environment, starting from a simple image that supports conda
+environment: 
+  image: continuumio/miniconda3:latest
+  conda_file: ./conda.yml
+
+command: >-
+  python regrid.py 
+  --src_cube ${{inputs.src_cube}} 
+  --grid_cube ${{inputs.grid_cube}}
+  --output_folder ${{outputs.output_folder}}
+  --output_name ${{inputs.output_name}}

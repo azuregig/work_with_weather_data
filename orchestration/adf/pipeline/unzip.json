@@ -1,0 +1,86 @@
+{
+	"name": "unzip",
+	"properties": {
+		"description": "unzips an individual gzipped gml file into a separate location in bronze ",
+		"activities": [
+			{
+				"name": "Copy and unzip",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "OSMM_bronze_gml_gz_folder",
+						"type": "DatasetReference",
+						"parameters": {
+							"package_id": {
+								"value": "@pipeline().parameters.data_package_id",
+								"type": "Expression"
+							},
+							"package_version": {
+								"value": "@pipeline().parameters.data_package_version",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "OSMM_bronze_gml_folder",
+						"type": "DatasetReference",
+						"parameters": {
+							"package_id": {
+								"value": "@pipeline().parameters.data_package_id",
+								"type": "Expression"
+							},
+							"package_version": {
+								"value": "@pipeline().parameters.data_package_version",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"data_package_id": {
+				"type": "string",
+				"defaultValue": "0040154231"
+			},
+			"data_package_version": {
+				"type": "string",
+				"defaultValue": "5500114"
+			}
+		},
+		"folder": {
+			"name": "ingest/OSMM"
+		},
+		"annotations": []
+	}
+}
