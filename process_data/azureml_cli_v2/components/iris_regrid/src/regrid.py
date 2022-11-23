@@ -3,8 +3,6 @@ import sys
 
 import mlflow
 
-# Must be imported before Iris!
-import iris_sample_data
 import iris
 
 import argparse
