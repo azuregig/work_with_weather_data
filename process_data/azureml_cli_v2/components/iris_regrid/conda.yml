@@ -4,7 +4,6 @@ channels:
 dependencies:
 - python=3.11
 - iris
-- iris-sample-data
 - pip
 - pip:
   - azureml-mlflow
