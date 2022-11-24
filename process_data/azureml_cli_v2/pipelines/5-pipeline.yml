@@ -1,0 +1,92 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+
+experiment_name: iris-data-parallel-regrid-demo
+display_name: regrid in parallel
+description: Pipeline with a parallel job that performs regridding by multiple files
+
+settings:
+  default_compute: azureml:cpu-cluster
+
+inputs:
+  regridded_name: "regridded.nc"
+
+outputs:
+  final_pipeline_output:
+    type: uri_folder
+    path: azureml://datastores/azuregigdatalake_bronze/paths/nc/regridded-test
+    mode: rw_mount
+
+jobs:
+
+  # regrid:
+  #   type: command
+  #   component: file:../components/iris_regrid/definition.yml
+  #   inputs:
+  #     src_cube:
+  #       type: uri_file
+  #       path: azureml://datastores/azuregigdatalake_bronze/paths/pp/iris_sample_data/GloSea4/ensemble_000.pp 
+  #     grid_cube:
+  #       type: uri_file
+  #       path: azureml://datastores/azuregigdatalake_bronze/paths/pp/iris_sample_data/air_temp.pp 
+  #     output_name: ${{parent.inputs.regridded_name}}    
+  #   outputs:
+  #     output_folder: ${{parent.outputs.final_pipeline_output}}
+
+
+# source - previews, but 14 months old - succeeds when used with newer curated env
+  mpi_job:
+    type: command
+    component: file:../components/iris_regrid_parallel/definition.yml
+
+# legacy prs-type job (PRS feature parity) - cannot be wrapped into component
+  data_parallel_job:
+    type: parallel
+    compute: azureml:cpu-cluster
+    inputs:
+      src_cubes: 
+        type: uri_folder
+        path: azureml://datastores/azuregigdatalake_bronze/paths/pp/iris_sample_data/GloSea4
+        mode: ro_mount
+      grid_cube:
+        type: uri_folder
+        path: azureml://datastores/azuregigdatalake_bronze/paths/pp/other_location/air_temp.pp 
+        mode: ro_mount
+    outputs:
+      parallel_output_folder: ${{parent.outputs.final_pipeline_output}}
+      job_output_file:
+        type: uri_file
+        mode: rw_mount
+    
+    input_data: ${{inputs.src_cubes}}
+    mini_batch_size: "1mb"
+    resources:
+        instance_count: 2
+    max_concurrency_per_instance: 2
+
+    logging_level: "DEBUG"
+    mini_batch_error_threshold: 5
+    retry_settings:
+      max_retries: 2
+      timeout: 60
+
+    task:
+      type: run_function
+      code: "../non-componentised-assets/regrid-parallel/src"
+      entry_script: entry-script.py
+      environment:
+        #image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04   # find a newer one - this requires 3.8 and has V. outdated conda
+        image: mcr.microsoft.com/azureml/openmpi4.1.0-cuda11.2-cudnn8-ubuntu20.04:20221010.v1
+        conda_file: ../non-componentised-assets/regrid-parallel/env/conda.yml
+      program_arguments: >-
+        --grid_cube ${{inputs.grid_cube}}
+        --output_folder ${{outputs.parallel_output_folder}}
+      append_row_to: ${{outputs.job_output_file}}
+  
+  # check_nc:
+  #   type: command
+  #   component: file:../components/check_nc/definition.yml
+  #   inputs: 
+  #     nc_folder: ${{parent.jobs.regrid.outputs.output_folder}}
+  #     nc_filename:   ${{parent.inputs.regridded_name}}
+  #     plot_var:  "surface_temperature"

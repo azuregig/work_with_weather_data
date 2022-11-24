@@ -1,0 +1,49 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+type: command
+
+# name: iris_regrid_parallel
+# display_name: regrid with iris parallel (mpi)
+# version: 1
+
+# inputs:
+#   src_cube:
+#     type: uri_file
+#   grid_cube:
+#     type: uri_file
+#   output_name:
+#     type: string
+
+# outputs:
+#   output_folder:
+#     type: uri_folder
+
+# code: ./src
+
+# # let's define a basic anonymous environment, starting from a simple image that supports conda
+# environment: 
+#   image: continuumio/miniconda3:latest
+#   conda_file: ./conda.yml
+
+# command: >-
+#   python regrid.py 
+#   --src_cube ${{inputs.src_cube}} 
+#   --grid_cube ${{inputs.grid_cube}}
+#   --output_folder ${{outputs.output_folder}}
+#   --output_name ${{inputs.output_name}}
+# type: command
+
+description: "Show the MPI training environment"
+name: MPI-hello-world
+display_name: MPI-hello-world
+version: 1
+compute: azureml:gpu-cluster
+#environment: azureml://registries/azureml/environments/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu/versions/50
+environment:
+  image: mcr.microsoft.com/azureml/openmpi4.1.0-cuda11.2-cudnn8-ubuntu20.04:20221010.v1
+command: >-
+  printenv 
+resources:
+  instance_count: 2
+distribution:
+  type: mpi
+  process_count_per_instance: 2

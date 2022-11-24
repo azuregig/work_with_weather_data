@@ -1,0 +1,10 @@
+name: iris-3-11
+channels:
+- conda-forge
+dependencies:
+- python=3.11
+- iris
+- iris-sample-data
+- pip
+- pip:
+  - azureml-mlflow

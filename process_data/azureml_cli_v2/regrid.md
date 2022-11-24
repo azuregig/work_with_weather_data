@@ -39,3 +39,13 @@ Verifying lazy loading of the iris cube data mounted within the compute, using m
 ## Parallel Jobs
 
 [todo]
+
+Learning
+- parallel job is very similar to PRS
+- deployed code requires azureml-core
+
+
+References
+- https://learn.microsoft.com/en-us/azure/machine-learning/reference-yaml-job-parallel 
+- https://learn.microsoft.com/en-us/azure/machine-learning/how-to-use-parallel-job-in-pipeline?tabs=cliv2 
+- https://github.com/Azure/azureml-previews/tree/main/previews/pipelines/samples/tf_mnist
