@@ -16,6 +16,10 @@ inputs:
 outputs:
   output_folder:
     type: uri_folder
+    mode: rw_mount
+  done: # an anonymous output so we can set up a dependency without reading any data in the next step
+    type: uri_folder
+    mode: upload
 
 code: ./src
 
@@ -30,3 +34,4 @@ command: >-
   --grid_cube ${{inputs.grid_cube}}
   --output_folder ${{outputs.output_folder}}
   --output_name ${{inputs.output_name}}
+  --report_done ${{outputs.done}}

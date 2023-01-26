@@ -1,0 +1,56 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+
+experiment_name: iris-regrid-demo-with-metadata
+display_name: process metadata at end of pipeline
+description: Pipeline with pre-configured component
+
+settings:
+  default_compute: azureml:cpu-cluster
+
+inputs:
+  regridded_name: "regridded.nc"
+  src_cube: 
+    path: azureml:my_data_set@latest
+    type: uri_file
+  grid_cube:  
+    path: azureml:the-grid-cube@latest
+    type: uri_file
+
+outputs:
+  final_pipeline_output:
+    type: uri_folder
+    path: azureml://datastores/azuregigdatalake_bronze/paths/nc/regridded-test
+    mode: rw_mount
+
+jobs:
+
+  regrid:
+    type: command
+    component: file:../components/iris_regrid/definition.yml
+    inputs:
+      src_cube: ${{parent.inputs.src_cube}}
+      grid_cube: ${{parent.inputs.grid_cube}}
+      # src_cube: 
+      #   type: uri_file
+      #   path: azureml://datastores/azuregigdatalake_bronze/paths/pp/iris_sample_data/GloSea4/ensemble_000.pp 
+      # grid_cube:
+      #   type: uri_file
+      #   path: azureml://datastores/azuregigdatalake_bronze/paths/pp/iris_sample_data/air_temp.pp 
+      output_name: ${{parent.inputs.regridded_name}}    
+    outputs:
+      output_folder: ${{parent.outputs.final_pipeline_output}}
+      done: # this is an anonymous output location - nothing will be written to it. It exists to facilitate step dependency
+        
+  inference_model1:
+    type: command
+    component: file:../components/process_metadata/definition.yml
+    inputs:
+      run_after: ${{parent.jobs.regrid.outputs.done}}
+
+
+  inference_model2:
+    type: command
+    component: file:../components/process_metadata/definition.yml
+    inputs:
+      run_after: ${{parent.jobs.regrid.outputs.done}}

@@ -1,0 +1,23 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+type: command
+
+name: process_metadata
+display_name: process run metadata
+description: Spike - can we get hold of run metadata to be able to send it somewhere - e.g. a purview integration
+version: 1
+
+inputs:
+  run_after:
+    type: uri_folder
+
+
+code: ./src
+
+# let's define a basic anonymous environment, starting from a simple image that supports conda
+environment: 
+  image: continuumio/miniconda3:latest
+  conda_file: ./env/conda.yml
+
+command: >-
+  python process_metadata.py
+  --run_after ${{inputs.run_after}} 

@@ -1,9 +1,10 @@
-name: iris-3-10
+name: run-logs
 channels:
 - conda-forge
 dependencies:
 - python=3.10
-- iris
 - pip
 - pip:
+  - azure-ai-ml
   - azureml-mlflow
+  - mlflow-skinny
