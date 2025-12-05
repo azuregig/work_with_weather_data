@@ -1,0 +1,863 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "AutoDeleteSettingSchema": {
+            "properties": {
+                "condition": {
+                    "type": "string",
+                    "enum": [
+                        "created_greater_than",
+                        "last_accessed_greater_than"
+                    ],
+                    "title": "condition"
+                },
+                "value": {
+                    "title": "value",
+                    "type": "string"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "CreationContextSchema": {
+            "properties": {
+                "created_at": {
+                    "title": "created_at",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "created_by": {
+                    "title": "created_by",
+                    "type": "string"
+                },
+                "created_by_type": {
+                    "title": "created_by_type",
+                    "type": "string"
+                },
+                "last_modified_at": {
+                    "title": "last_modified_at",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "last_modified_by": {
+                    "title": "last_modified_by",
+                    "type": "string"
+                },
+                "last_modified_by_type": {
+                    "title": "last_modified_by_type",
+                    "type": "string"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "MPIDistributionSchema": {
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "process_count_per_instance": {
+                    "title": "process_count_per_instance",
+                    "type": "number",
+                    "format": "integer"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "mpi"
+                    ],
+                    "title": "type"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "TensorFlowDistributionSchema": {
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "parameter_server_count": {
+                    "title": "parameter_server_count",
+                    "type": "number",
+                    "format": "integer"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "tensorflow"
+                    ],
+                    "title": "type"
+                },
+                "worker_count": {
+                    "title": "worker_count",
+                    "type": "number",
+                    "format": "integer"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "PyTorchDistributionSchema": {
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "process_count_per_instance": {
+                    "title": "process_count_per_instance",
+                    "type": "number",
+                    "format": "integer"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "pytorch"
+                    ],
+                    "title": "type"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "RayDistributionSchema": {
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "address": {
+                    "title": "address",
+                    "type": "string"
+                },
+                "dashboard_port": {
+                    "title": "dashboard_port",
+                    "type": "number",
+                    "format": "integer"
+                },
+                "head_node_additional_args": {
+                    "title": "head_node_additional_args",
+                    "type": "string"
+                },
+                "include_dashboard": {
+                    "title": "include_dashboard",
+                    "type": "boolean"
+                },
+                "port": {
+                    "title": "port",
+                    "type": "number",
+                    "format": "integer"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "ray"
+                    ],
+                    "title": "type"
+                },
+                "worker_node_additional_args": {
+                    "title": "worker_node_additional_args",
+                    "type": "string"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "AnonymousEnvironmentSchema": {
+            "properties": {
+                "auto_delete_setting": {
+                    "type": "object",
+                    "$ref": "#/definitions/AutoDeleteSettingSchema"
+                },
+                "build": {
+                    "type": "object",
+                    "$ref": "#/definitions/BuildContextSchema",
+                    "description": "Docker build context to create the environment. Mutually exclusive with image"
+                },
+                "conda_file": {
+                    "anyOf": [
+                        {
+                            "title": "conda_file",
+                            "type": "string"
+                        },
+                        {
+                            "title": "conda_file",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "creation_context": {
+                    "type": "object",
+                    "$ref": "#/definitions/CreationContextSchema"
+                },
+                "datastore": {
+                    "title": "datastore",
+                    "type": "string",
+                    "description": "Name of the datastore to upload to.",
+                    "arm_type": "datastores"
+                },
+                "description": {
+                    "title": "description",
+                    "type": "string"
+                },
+                "id": {
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "pattern": "^azureml://registries/.*",
+                            "arm_type": null,
+                            "title": "id",
+                            "readonly": true
+                        },
+                        {
+                            "type": "string",
+                            "pattern": "^azureml:.+",
+                            "arm_type": "environments",
+                            "title": "id",
+                            "readonly": true
+                        }
+                    ]
+                },
+                "image": {
+                    "title": "image",
+                    "type": "string"
+                },
+                "inference_config": {
+                    "type": "object",
+                    "$ref": "#/definitions/InferenceConfigSchema"
+                },
+                "intellectual_property": {
+                    "type": "object",
+                    "$ref": "#/definitions/IntellectualPropertySchema"
+                },
+                "latest_version": {
+                    "title": "latest_version",
+                    "type": "string",
+                    "readonly": true
+                },
+                "name": {
+                    "title": "name",
+                    "type": "string"
+                },
+                "os_type": {
+                    "type": "string",
+                    "enum": [
+                        "linux",
+                        "windows"
+                    ],
+                    "title": "os_type"
+                },
+                "$schema": {
+                    "title": "$schema",
+                    "type": "string",
+                    "readonly": true
+                },
+                "tags": {
+                    "title": "tags",
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "version": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "title": "version"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "BuildContextSchema": {
+            "properties": {
+                "dockerfile_path": {
+                    "title": "dockerfile_path",
+                    "type": "string"
+                },
+                "path": {
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "arm_type": "local_path",
+                            "title": "path"
+                        },
+                        {
+                            "title": "path",
+                            "type": "string"
+                        }
+                    ]
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "InferenceConfigSchema": {
+            "required": [
+                "liveness_route",
+                "readiness_route",
+                "scoring_route"
+            ],
+            "properties": {
+                "liveness_route": {
+                    "type": "object",
+                    "$ref": "#/definitions/RouteSchema"
+                },
+                "readiness_route": {
+                    "type": "object",
+                    "$ref": "#/definitions/RouteSchema"
+                },
+                "scoring_route": {
+                    "type": "object",
+                    "$ref": "#/definitions/RouteSchema"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "RouteSchema": {
+            "required": [
+                "path",
+                "port"
+            ],
+            "properties": {
+                "path": {
+                    "title": "path",
+                    "type": "string"
+                },
+                "port": {
+                    "title": "port",
+                    "type": "number",
+                    "format": "integer"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "IntellectualPropertySchema": {
+            "properties": {
+                "protection_level": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "none"
+                    ],
+                    "title": "protection_level"
+                },
+                "publisher": {
+                    "title": "publisher",
+                    "type": "string"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "ParameterSchema": {
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "default": {
+                    "anyOf": [
+                        {
+                            "title": "default",
+                            "type": "string"
+                        },
+                        {
+                            "title": "default",
+                            "type": "number",
+                            "format": "decimal"
+                        },
+                        {
+                            "title": "default",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                "description": {
+                    "title": "description",
+                    "type": "string"
+                },
+                "enum": {
+                    "title": "enum",
+                    "type": "array",
+                    "items": {
+                        "title": "enum",
+                        "type": "string"
+                    }
+                },
+                "max": {
+                    "anyOf": [
+                        {
+                            "title": "max",
+                            "type": "string"
+                        },
+                        {
+                            "title": "max",
+                            "type": "number",
+                            "format": "decimal"
+                        }
+                    ]
+                },
+                "min": {
+                    "anyOf": [
+                        {
+                            "title": "min",
+                            "type": "string"
+                        },
+                        {
+                            "title": "min",
+                            "type": "number",
+                            "format": "decimal"
+                        }
+                    ]
+                },
+                "optional": {
+                    "title": "optional",
+                    "type": "boolean"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "boolean",
+                        "integer",
+                        "number",
+                        "string"
+                    ],
+                    "title": "type"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "InputPortSchema": {
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "default": {
+                    "title": "default",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "description",
+                    "type": "string"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "direct",
+                        "download",
+                        "eval_download",
+                        "eval_mount",
+                        "mount",
+                        "ro_mount",
+                        "rw_mount",
+                        "upload",
+                        "link"
+                    ],
+                    "title": "mode"
+                },
+                "optional": {
+                    "title": "optional",
+                    "type": "boolean"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "path",
+                        "custom_model",
+                        "mlflow_model",
+                        "mltable",
+                        "triton_model",
+                        "uri_file",
+                        "uri_folder"
+                    ],
+                    "title": "type"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "OutputPortSchema": {
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "description": {
+                    "title": "description",
+                    "type": "string"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "direct",
+                        "download",
+                        "eval_download",
+                        "eval_mount",
+                        "mount",
+                        "ro_mount",
+                        "rw_mount",
+                        "upload",
+                        "link"
+                    ],
+                    "title": "mode"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "path",
+                        "custom_model",
+                        "mlflow_model",
+                        "mltable",
+                        "triton_model",
+                        "uri_file",
+                        "uri_folder"
+                    ],
+                    "title": "type"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "PrimitiveOutputSchema": {
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "description": {
+                    "title": "description",
+                    "type": "string"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "direct",
+                        "download",
+                        "eval_download",
+                        "eval_mount",
+                        "mount",
+                        "ro_mount",
+                        "rw_mount",
+                        "upload",
+                        "link"
+                    ],
+                    "title": "mode"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "boolean",
+                        "integer",
+                        "number",
+                        "string"
+                    ],
+                    "title": "type"
+                }
+            },
+            "type": "object",
+            "additionalProperties": true
+        },
+        "QueueSettingsSchema": {
+            "properties": {
+                "job_tier": {
+                    "type": "string",
+                    "enum": [
+                        "spot",
+                        "basic",
+                        "standard",
+                        "premium"
+                    ],
+                    "title": "job_tier"
+                },
+                "priority": {
+                    "type": "string",
+                    "enum": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "title": "priority"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
+        "ComponentResourceSchema": {
+            "properties": {
+                "docker_args": {
+                    "title": "docker_args",
+                    "type": "string",
+                    "description": "arguments to pass to the Docker run command."
+                },
+                "instance_count": {
+                    "title": "instance_count",
+                    "type": "number",
+                    "format": "integer"
+                },
+                "instance_type": {
+                    "title": "instance_type",
+                    "type": "string",
+                    "description": "The instance type to make available to this job."
+                },
+                "locations": {
+                    "title": "locations",
+                    "type": "array",
+                    "items": {
+                        "title": "locations",
+                        "type": "string"
+                    }
+                },
+                "max_instance_count": {
+                    "title": "max_instance_count",
+                    "type": "number",
+                    "format": "integer",
+                    "description": "The maximum number of instances to make available to this job."
+                },
+                "properties": {
+                    "title": "properties",
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "shm_size": {
+                    "title": "shm_size",
+                    "type": "string",
+                    "description": "The size of the docker container's shared memory block. This should be in the format of `<number><unit>` where number as to be greater than 0 and the unit can be one of `b` (bytes), `k` (kilobytes), `m` (megabytes), or `g` (gigabytes)."
+                }
+            },
+            "type": "object",
+            "additionalProperties": true
+        },
+        "CommandComponentSchema": {
+            "required": [
+                "command",
+                "environment",
+                "name"
+            ],
+            "properties": {
+                "additional_includes": {
+                    "title": "additional_includes",
+                    "type": "array",
+                    "items": {
+                        "title": "additional_includes",
+                        "type": "string"
+                    }
+                },
+                "auto_delete_setting": {
+                    "type": "object",
+                    "$ref": "#/definitions/AutoDeleteSettingSchema"
+                },
+                "code": {
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "arm_type": "local_path",
+                            "title": "code"
+                        },
+                        {
+                            "title": "code",
+                            "type": "string"
+                        },
+                        {
+                            "type": "string",
+                            "pattern": "^git+",
+                            "title": "code"
+                        },
+                        {
+                            "type": "string",
+                            "pattern": "^azureml://registries/.*",
+                            "arm_type": "codes",
+                            "title": "code"
+                        },
+                        {
+                            "type": "string",
+                            "pattern": "^azureml://feeds/.*",
+                            "arm_type": "codes",
+                            "title": "code"
+                        },
+                        {
+                            "type": "string",
+                            "pattern": "^azureml:.+",
+                            "arm_type": "codes",
+                            "title": "code"
+                        }
+                    ]
+                },
+                "command": {
+                    "title": "command",
+                    "type": "string",
+                    "description": "The command run and the parameters passed. This string may contain place holders of inputs in {}. "
+                },
+                "creation_context": {
+                    "type": "object",
+                    "$ref": "#/definitions/CreationContextSchema"
+                },
+                "description": {
+                    "title": "description",
+                    "type": "string"
+                },
+                "display_name": {
+                    "title": "display_name",
+                    "type": "string"
+                },
+                "distribution": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "$ref": "#/definitions/MPIDistributionSchema"
+                        },
+                        {
+                            "type": "object",
+                            "$ref": "#/definitions/TensorFlowDistributionSchema"
+                        },
+                        {
+                            "type": "object",
+                            "$ref": "#/definitions/PyTorchDistributionSchema"
+                        },
+                        {
+                            "type": "object",
+                            "$ref": "#/definitions/RayDistributionSchema"
+                        }
+                    ]
+                },
+                "environment": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "$ref": "#/definitions/AnonymousEnvironmentSchema"
+                        },
+                        {
+                            "type": "string",
+                            "pattern": "^azureml://registries/.*",
+                            "arm_type": "environments",
+                            "title": "environment"
+                        },
+                        {
+                            "type": "string",
+                            "pattern": "^azureml:.+",
+                            "arm_type": "environments",
+                            "title": "environment"
+                        },
+                        {
+                            "type": "string",
+                            "pattern": "^file:.*"
+                        }
+                    ]
+                },
+                "id": {
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "pattern": "^azureml://registries/.*",
+                            "arm_type": null,
+                            "title": "id",
+                            "readonly": true
+                        },
+                        {
+                            "type": "string",
+                            "pattern": "^azureml:.+",
+                            "arm_type": "components",
+                            "title": "id",
+                            "readonly": true
+                        }
+                    ]
+                },
+                "inputs": {
+                    "title": "inputs",
+                    "type": "object",
+                    "additionalProperties": {
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "$ref": "#/definitions/ParameterSchema"
+                            },
+                            {
+                                "type": "object",
+                                "$ref": "#/definitions/InputPortSchema"
+                            }
+                        ]
+                    }
+                },
+                "is_deterministic": {
+                    "title": "is_deterministic",
+                    "type": "boolean"
+                },
+                "latest_version": {
+                    "title": "latest_version",
+                    "type": "string",
+                    "readonly": true
+                },
+                "name": {
+                    "title": "name",
+                    "type": "string"
+                },
+                "outputs": {
+                    "title": "outputs",
+                    "type": "object",
+                    "additionalProperties": {
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "$ref": "#/definitions/OutputPortSchema"
+                            },
+                            {
+                                "type": "object",
+                                "$ref": "#/definitions/PrimitiveOutputSchema"
+                            }
+                        ]
+                    }
+                },
+                "properties": {
+                    "title": "properties",
+                    "type": "object",
+                    "additionalProperties": {
+                        "title": "properties",
+                        "type": "string"
+                    }
+                },
+                "queue_settings": {
+                    "type": "object",
+                    "$ref": "#/definitions/QueueSettingsSchema"
+                },
+                "resources": {
+                    "type": "object",
+                    "$ref": "#/definitions/ComponentResourceSchema"
+                },
+                "$schema": {
+                    "title": "$schema",
+                    "type": "string"
+                },
+                "tags": {
+                    "title": "tags",
+                    "type": "object",
+                    "additionalProperties": {
+                        "title": "tags",
+                        "type": "string"
+                    }
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "command"
+                    ],
+                    "title": "type"
+                },
+                "version": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "title": "version"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        }
+    },
+    "$ref": "#/definitions/CommandComponentSchema"
+}
