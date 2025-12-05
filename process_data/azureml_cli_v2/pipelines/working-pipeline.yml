@@ -1,0 +1,83 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+
+experiment_name: filedownload
+
+settings:
+  default_compute: azureml:cpu-cluster
+
+outputs:
+  final_pipeline_output:
+    type: uri_folder
+    path: azureml://datastores/azuregigdatalake_bronze/paths/png/mnist_embossed
+    mode: rw_mount
+  parallel_output:
+    type: uri_folder
+    path: azureml://datastores/azuregigdatalake_bronze/paths/png/mnist_embossed_parallel
+    mode: rw_mount
+
+jobs:
+
+  get_mnist:
+    type: command
+    component: file:../components/get_mnist/definition.yml
+    inputs:
+      sampling: 0.001
+      dirs: "false"
+    outputs:
+      output_folder: 
+
+
+  emboss:
+    type: command
+    component: file:../components/convert/definition.yml
+    inputs:
+      input_folder: ${{parent.jobs.get_mnist.outputs.output_folder}}
+    outputs:
+      output_folder: ${{parent.outputs.final_pipeline_output}}
+   
+  trying to use 'ParallelSchema', which requires a component, but doesn't appear to support a command component 
+  emboss_parallel:
+    type: parallel
+    comment: "Parallel version of emboss"
+    component: azureml:process_folder:1
+    inputs:
+      input_folder: ${{parent.jobs.get_mnist.outputs.output_folder}}
+    outputs:
+      output_folder: ${{parent.outputs.parallel_output}}
+    input_data: ${{inputs.input_folder}}
+    mini_batch_size: "5"
+    resources:
+      instance_count: 2
+  
+  # using AnonymousParallelComponentSchema instead - requires an environment with azureml dependencies
+
+  emboss_parallel2:
+    type: parallel
+    display_name: "foo"
+    inputs:
+      input_folder: ${{parent.jobs.get_mnist.outputs.output_folder}}
+    outputs:
+      output_folder: ${{parent.outputs.parallel_output}}
+      output_job_file: 
+        type: uri_file
+        path: azureml://datastores/azuregigdatalake_bronze/paths/png/mnist_embossed_parallel/job_file.csv
+        mode: rw_mount
+    input_data: ${{inputs.input_folder}}
+    mini_batch_size: "5"
+    resources:
+      instance_count: 2
+    task: 
+      type: run_function
+      environment: azureml:azuregig-py39-prs:3
+      code: ../components/convert/src-parallel
+      entry_script: process.py
+      program_arguments: >-
+        --output_folder ${{outputs.output_folder}}
+      append_row_to: ${{outputs.output_job_file}}
+
+
+
+
+
+    

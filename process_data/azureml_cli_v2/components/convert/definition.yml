@@ -1,0 +1,27 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+type: command
+
+name: process_folder
+display_name: process data folder
+description: |
+  Takes an input folder of png files and outputs a folder of processed png files. 
+  #### Supported processing
+  - apply embossing filter
+version: 1
+
+inputs:
+  input_folder:
+    type: uri_folder
+
+outputs:
+  output_folder:
+    type: uri_folder
+
+code: ./src
+
+environment: azureml:azuregig-py39:4
+
+command: >-
+  python main.py 
+  --input_folder ${{inputs.input_folder}}
+  --output_folder ${{outputs.output_folder}}

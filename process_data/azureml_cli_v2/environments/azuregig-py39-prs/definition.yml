@@ -1,0 +1,13 @@
+$schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
+name: azuregig-py39-prs
+image: continuumio/miniconda3:latest
+conda_file: conda.yml
+description: |
+  ## Multi-purpose python environment (Python 3.9)
+  
+  Packages:
+  - numpy
+  - Pillow
+
+  with additional packages as required by parallel pipeline step (PRS)
+  - requests

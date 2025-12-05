@@ -1,3 +1,6 @@
 .env
 .azure
 mlruns
+tmp/
+data/
+test/

@@ -1,0 +1,21 @@
+# https://learn.microsoft.com/en-us/azure/machine-learning/reference-yaml-component-pipeline?view=azureml-api-2
+
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineComponent.schema.json
+
+name: pipeline_component_with_parallel
+description: |
+  Pipeline component - multiple steps that can be wrapped as a component in another pipeline, 
+  or deployed to pipeline endpoint. This example explores the use of parallel steps within this pipeline.
+
+inputs:
+  myparam:
+    type: string
+    default: "myparam"
+
+jobs:
+  
+  my_parallel_component:
+    component:
+
+# ParallelSchema
+

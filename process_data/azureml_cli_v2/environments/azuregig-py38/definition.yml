@@ -1,0 +1,5 @@
+$schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
+name: azuregig-py38
+image: continuumio/miniconda3:latest
+conda_file: conda.yml
+description: Multi-purpose python environment (Python 3.8)

@@ -1,0 +1,14 @@
+name: azuregig-py39-prs
+channels:
+- conda-forge
+dependencies:
+- python=3.9
+- numpy
+- Pillow
+- requests
+- pip
+- pip:
+  - azureml-mlflow
+  - azureml-dataset-runtime[pandas,fuse]
+  - azureml-telemetry
+  - azureml-core

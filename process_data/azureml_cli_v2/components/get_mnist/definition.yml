@@ -1,0 +1,36 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+type: command
+
+name: get_mnist
+display_name: Get MNIST (png)
+description: |
+  Download MNIST dataset and convert to png
+
+  Usage:
+  - Set *sampling* to 1 to download the full dataset, or a fraction to download a subset.
+  - Set *dirs* to `"true"` (string) to create a folder structure with separate train and test folders, 
+    with subfolders for each class, or `"false"` to save all images in a single folder.
+
+version: 1
+
+inputs:
+  sampling:
+    type: number
+    default: 1.0
+  dirs:
+    type: string
+    default: "true"
+
+outputs:
+  output_folder:
+    type: uri_folder
+
+code: ./src
+
+environment: azureml:azuregig-py39:4
+
+command: >-
+  python download-and-convert-to-png.py
+  --output_folder ${{outputs.output_folder}}
+  --sampling ${{inputs.sampling}}
+  --dirs ${{inputs.dirs}}

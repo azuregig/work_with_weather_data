@@ -1,0 +1,7 @@
+name: azuregig-py39
+channels:
+- conda-forge
+dependencies:
+- python=3.9
+- numpy
+- Pillow
